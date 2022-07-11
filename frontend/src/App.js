@@ -4,7 +4,7 @@ import { Heading } from "@chakra-ui/react";
 function App() {
   return (
     <div className="App">
-      <Heading>chatX</Heading>
+      <Heading>chatX Now</Heading>
     </div>
   );
 }
