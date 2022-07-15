@@ -1,13 +1,23 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { chats } = require("./data/data");
+const connectDB = require("./config/db");
+const userRoutes = require("./routes/userRoutes");
+const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 //server
 const app = express();
 dotenv.config();
+//connecting to Database
+connectDB();
+app.use(express.json()); //to accept JSON data
 //express JS api
 app.get("/", (req, res) => {
   res.send("API is Running Now! Bro!");
 });
+
+app.use("/api/user", userRoutes);
+app.use(notFound);
+app.use(errorHandler);
 //Chat api
 app.get("/api/chat", (req, res) => {
   res.send(chats);
