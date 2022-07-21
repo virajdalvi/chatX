@@ -79,7 +79,7 @@ const Login = () => {
       <FormControl id="email" isRequired>
         <FormLabel>Email</FormLabel>
         <Input
-          placeholder="Enter your email..."
+          placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         />
