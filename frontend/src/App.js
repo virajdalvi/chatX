@@ -1,5 +1,4 @@
 import "./App.css";
-import { Heading } from "@chakra-ui/react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
 import HomePage from "./pages/HomePage";
