@@ -1,4 +1,4 @@
-import { Box, Button, Show, Text, Tooltip,Flex,Spacer, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, Divider, DrawerBody, Input, HStack } from '@chakra-ui/react'
+import { Box, Button, Show, Text, Tooltip,Flex,Spacer, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Drawer, DrawerOverlay, DrawerContent, DrawerHeader, Divider, DrawerBody, Input, HStack, Spinner } from '@chakra-ui/react'
 import { BellIcon, ChevronDownIcon,ChatIcon } from '@chakra-ui/icons'
 import "../../pages/ChatPage.css"
 import React,{useState} from 'react'
@@ -30,6 +30,8 @@ const SideDrawer = () => {
         },
       };
       const { data } = await axios.post("/api/chat",{userId},config);
+      if(!chats.find((c)=>c._id === data._id)) setChats([data,...chats])
+
       setSelectedChat(data)
       setLoadingChat(false)
       onClose()
@@ -148,7 +150,7 @@ const SideDrawer = () => {
                   mr={2}
                   value={search}
                   onChange={(e)=>setSearch(e.target.value)}></Input>
-                  <Button onClick={handleSearch} colorScheme='whatsapp' >Go</Button>
+                  <Button onClick={handleSearch} colorScheme='whatsapp'>Go</Button>
                   </Flex>
                   
                 </Box>
@@ -168,7 +170,7 @@ const SideDrawer = () => {
              )
 
             )}
-              
+              {loadingChat && <Spinner ml="auto" d="flex"/>}
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
