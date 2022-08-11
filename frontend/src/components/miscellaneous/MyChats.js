@@ -5,6 +5,7 @@ import { Avatar, Box, Button, Flex, Spacer, Stack, Text, useToast, } from '@chak
 import { AddIcon } from '@chakra-ui/icons'
 import ChatLoading from './ChatLoading'
 import { getSender,getuserProfile } from '../../config/ChatLogics'
+import GroupchatModal from './GroupchatModal'
 const MyChats = ({fetchAgain}) => {
   const[loggedUser,setLoggedUser]=useState()
   const {selectedChat,user,setSelectedChat,chats,setChats} = ChatState()
@@ -39,9 +40,9 @@ const MyChats = ({fetchAgain}) => {
   },[fetchAgain])
   return (
     <>  
-      <Box d={{base: selectedChat ? "none" : "flex", md:"flex"}}
+      <Box  display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
-      alignItems={"center"}
+      alignItems="center"
       p={4}
       bg="#181D21"
       w={{base:"100%",md:"31%"}}
@@ -70,7 +71,10 @@ const MyChats = ({fetchAgain}) => {
           variant="ghost" _hover={{ bg: '#272f36' }} _active={{bg: '#272f36'}} 
           mb={4}
         >
-          New Group Chat
+          <GroupchatModal>
+            New Group Chat
+          </GroupchatModal>
+         
         </Button>
       
         </Flex> 
