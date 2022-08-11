@@ -1,10 +1,10 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider'
-import { Avatar, Box, Button, Flex, Spacer, Stack, Text, useToast, } from '@chakra-ui/react'
+import { Avatar, Box, Button, Divider, Flex, Spacer, Stack, Text, useToast, } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import ChatLoading from './ChatLoading'
-import { getSender,getuserProfile } from '../../config/ChatLogics'
+import { getSender,getuserProfile, groupProfile } from '../../config/ChatLogics'
 import GroupchatModal from './GroupchatModal'
 const MyChats = ({fetchAgain}) => {
   const[loggedUser,setLoggedUser]=useState()
@@ -78,6 +78,7 @@ const MyChats = ({fetchAgain}) => {
         </Button>
       
         </Flex> 
+        <Divider/>
         <Box
         
         pt={3}
@@ -105,8 +106,10 @@ const MyChats = ({fetchAgain}) => {
                   fontSize={{base:"18px"}}
                   >
                     <Flex>
-                    <Avatar size={"sm"} cursor={"pointer"} name={getSender(loggedUser,chat.users)} src={
-                      getuserProfile(loggedUser,chat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(loggedUser,chat.users) : getuserProfile(loggedUser,chat.users)
+                    <Avatar size={"md"} cursor={"pointer"} name={chat.isGroupChat ? groupProfile(chat.chatName):getSender(loggedUser,chat.users)} src={
+                      
+                      getuserProfile(loggedUser,chat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(loggedUser,chat.users) : chat.isGroupChat ? groupProfile(chat.chatName): getuserProfile(loggedUser,chat.users)
+                    
                     }/>
                     <Text pl={4}>
                       {!chat.isGroupChat ? (
