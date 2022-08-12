@@ -7,16 +7,23 @@ import ChatBox from "../components/miscellaneous/ChatBox";
 import "./ChatPage.css"
 const ChatPage = () => {
   const {user} = ChatState();
+  const [fetchAgain, setFetchAgain] = useState(false)
   return (
     <div style={{width:"100%"}}>
       {user && <SideDrawer/>}
-      <Box w="100%" h="91.5vh" p="10px">
+      <Box w="100%" h="93vh" p="10px" display={"flex"}>
       
-        <Flex>
-          {user && <MyChats/>}
+        
+          {user && <MyChats
+            fetchAgain={fetchAgain}          
+          />}
           <Spacer/>
-          {user && <ChatBox/>}
-        </Flex>
+          {user && <ChatBox
+            fetchAgain={fetchAgain}
+            setFetchAgain={setFetchAgain}
+            
+          />}
+        
       </Box>
     </div>
   );
