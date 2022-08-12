@@ -5,8 +5,9 @@ import img from "../../Images/Online world-pana.svg";
 import { getSender,getSenderFull,getuserProfile,groupProfile } from '../../config/ChatLogics'
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import ProfileModal from './ProfileModal';
+import UpdateGroupChatModal from './UpdateGroupChatModal';
 
-const SingleChat = () => {
+const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const {user,selectedChat,setSelectedChat} = ChatState();
 
   return (
@@ -57,7 +58,11 @@ const SingleChat = () => {
                         ) :(
                             <>
                                 {selectedChat.chatName}
-                                <ProfileModal user={getSenderFull(user,selectedChat.users)} justifyContent="space-between"/>
+                                {<UpdateGroupChatModal
+                                    fetchAgain={fetchAgain}
+                                    setFetchAgain={setFetchAgain}
+                                    
+                                />}
                             </>
                         )
                     }

@@ -52,24 +52,33 @@ const MyChats = ({fetchAgain}) => {
       >
       
         <Box
-         pb={3}
+         pb={2}
          px={3}
-         fontSize={{base:"20px",md:"25px"}}
-         
          w="100%"
          justifyContent={"space-between"}
          alignItems="center"
-         
+         flexDirection={"column"}
       >
         <Flex>
-          MyChats
+
+          <Text
+            fontSize={{ base: "17px", md: "15px", lg: "20px" }}
+            display={"flex"}
+            alignItems={"center"}
+            fontWeight={"bold"}
+
+          >
+            MyChats
+          </Text>
           <Spacer/>
         <Button
-          fontSize={{base:"15px"}}
           rightIcon={<AddIcon/>}
           bg='#272f36'
           variant="ghost" _hover={{ bg: '#272f36' }} _active={{bg: '#272f36'}} 
+          size={"sm"}
+          mt={2}
           mb={4}
+       
         >
           <GroupchatModal>
             New Group Chat
@@ -104,6 +113,7 @@ const MyChats = ({fetchAgain}) => {
                   borderRadius={"lg"}
                   key={chat._id}
                   fontSize={{base:"18px"}}
+                  fontWeight={"thin"}
                   >
                     <Flex>
                     <Avatar size={"md"} cursor={"pointer"} name={chat.isGroupChat ? groupProfile(chat.chatName):getSender(loggedUser,chat.users)} src={
