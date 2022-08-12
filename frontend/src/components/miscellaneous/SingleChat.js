@@ -1,15 +1,18 @@
-import { Avatar, Box, Divider, IconButton, Image, Text } from '@chakra-ui/react';
-import React from 'react'
+import { Avatar, Box, Divider, FormControl, Icon, IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text } from '@chakra-ui/react';
+import React, { useState } from 'react'
 import { ChatState } from '../../Context/ChatProvider';
 import img from "../../Images/Online world-pana.svg";
 import { getSender,getSenderFull,getuserProfile,groupProfile } from '../../config/ChatLogics'
-import { ArrowBackIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import ProfileModal from './ProfileModal';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const {user,selectedChat,setSelectedChat} = ChatState();
-
+    const [message, setMessage] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [newMessage, setNewMessage] = useState(false)
+    const sendMessage =()=>{}
   return (
     <>
         {selectedChat ? (
@@ -83,7 +86,42 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     
 
                 >
+                {loading ? 
+                <Spinner
+                    size={"xl"}
+                    w={"20"}
+                    h={"20"}
+                    alignSelf="center"
+                    margin={"auto"}
+                
+                /> : 
+                <>
+                    {/*Messages*/}
+                </>}
+                
+                <FormControl
+                    onKeyDown={sendMessage}
+                    isRequired
+                    mt={3}
+                 >
+                    <InputGroup>
+                    <Input
+                        variant={"filled"}
+                        bg={"#181D21"}
+                        _hover={"#181D21"}
+                        _focus={"#181D21"}
+                        _active={"#181D21"}
+                        
+                    />
+                        <InputRightElement children={<ArrowForwardIcon bg='green.500' w={6} h={6} borderRadius={"50"}/>} />
 
+                    </InputGroup>
+               
+                
+                    
+
+
+                 </FormControl>
                 </Box>
                  
             </>
