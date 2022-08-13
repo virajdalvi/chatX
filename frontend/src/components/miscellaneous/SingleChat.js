@@ -1,18 +1,87 @@
-import { Avatar, Box, Divider, FormControl, Icon, IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text } from '@chakra-ui/react';
-import React, { useState } from 'react'
+import { Avatar, Box, Divider, FormControl, Icon, IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react';
+import React, { useState,useEffect } from 'react'
 import { ChatState } from '../../Context/ChatProvider';
 import img from "../../Images/Online world-pana.svg";
 import { getSender,getSenderFull,getuserProfile,groupProfile } from '../../config/ChatLogics'
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import ProfileModal from './ProfileModal';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
-
+import axios from 'axios';
+import "../../components/style.css"
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+    const toast = useToast()
     const {user,selectedChat,setSelectedChat} = ChatState();
-    const [message, setMessage] = useState([])
+    const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
-    const [newMessage, setNewMessage] = useState(false)
-    const sendMessage =()=>{}
+    const [newMessage, setNewMessage] = useState("")
+    
+    const fetchMessages=async()=>{
+        if(!selectedChat) return;
+        try {
+            const config = {
+                headers: {
+                  Authorization: `Bearer ${user.token}`,
+                },
+              };
+              setLoading(true)
+              const {data} =await axios.get(`/api/message/${selectedChat._id}`,config)
+              setMessages(data)
+              setLoading(false)
+            } catch (error) {
+                toast({
+                    title: "Error Occured!",
+                    description:"Failed to send the message",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "bottom-left",
+                  });
+        }
+
+    }
+    console.log("Here",messages)
+
+    const sendMessage = async(event)=>{
+        if(event.key==='Enter' && newMessage){
+            try {
+                const config = {
+                    headers: {
+                      "Content-Type":"application/json",
+                      Authorization: `Bearer ${user.token}`,
+                    },
+                  };
+                  setNewMessage("")
+                const {data} = await axios.post(`/api/message`,{
+                    content:newMessage,
+                    chatId:selectedChat._id,
+                
+                },config)
+                console.log(data)
+                setNewMessage("")
+                setMessages([...messages,data])
+            } catch (error) {
+                toast({
+                    title: "Error Occured!",
+                    description:"Failed to send the message",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "bottom-left",
+                  });
+            }
+        }
+
+    }
+    
+   useEffect(() => {
+    fetchMessages();
+    // eslint-disable-next-line
+  }, [selectedChat]);
+    const typingHandler =(e)=>{
+        setNewMessage(e.target.value)
+    }
+    
+    
   return (
     <>
         {selectedChat ? (
@@ -47,7 +116,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                       _hover={{ bg: '#272f36' }} _active={{bg: '#272f36'}}  bg="#272f36"
                      marginRight={2}
                     />
-                    <Avatar size={"md"} cursor={"pointer"} name={selectedChat.isGroupChat ? groupProfile(selectedChat.chatName):getSender(user,selectedChat.users)} src={
+                    <Avatar size={"md"} cursor={"pointer"} name={selectedChat.isGroupChat ? selectedChat.chatName :getSender(user,selectedChat.users)} src={
                       
                       getuserProfile(user,selectedChat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(user,selectedChat.users) : selectedChat.isGroupChat ? groupProfile(selectedChat.chatName): getuserProfile(user,selectedChat.users)
                     
@@ -58,12 +127,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 {getSender(user,selectedChat.users)}
                                 <ProfileModal user={getSenderFull(user,selectedChat.users)} justifyContent="space-between"/>
                             </>
+
                         ) :(
                             <>
                                 {selectedChat.chatName}
                                 {<UpdateGroupChatModal
                                     fetchAgain={fetchAgain}
                                     setFetchAgain={setFetchAgain}
+                                    fetchMessages={fetchMessages}
                                     
                                 />}
                             </>
@@ -103,14 +174,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     onKeyDown={sendMessage}
                     isRequired
                     mt={3}
+                    placeholder="Enter a message...."
                  >
                     <InputGroup>
                     <Input
                         variant={"filled"}
                         bg={"#181D21"}
-                        _hover={"#181D21"}
-                        _focus={"#181D21"}
-                        _active={"#181D21"}
+                        onChange={typingHandler}
+                        value={newMessage}
                         
                     />
                         <InputRightElement children={<ArrowForwardIcon bg='green.500' w={6} h={6} borderRadius={"50"}/>} />

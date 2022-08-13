@@ -11,8 +11,11 @@ import { useToast } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ChatState } from "../../Context/ChatProvider";
 
 const Login = () => {
+  const {setLoggedUser} = ChatState();
+
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [show, setShow] = useState(false);
@@ -60,6 +63,8 @@ const Login = () => {
         position: "bottom",
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
+
       setLoading(false);
       history("/chats");
     } catch (error) {
@@ -82,6 +87,7 @@ const Login = () => {
           placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+          type="email"
         />
       </FormControl>
       <FormControl id="password" isRequired>

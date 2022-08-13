@@ -7,8 +7,8 @@ import ChatLoading from './ChatLoading'
 import { getSender,getuserProfile, groupProfile } from '../../config/ChatLogics'
 import GroupchatModal from './GroupchatModal'
 const MyChats = ({fetchAgain}) => {
-  const[loggedUser,setLoggedUser]=useState()
-  const {selectedChat,user,setSelectedChat,chats,setChats} = ChatState()
+  //const[loggedUser,setLoggedUser]=useState()
+  const {selectedChat,user,setSelectedChat,chats,setChats,loggedUser,setLoggedUser} = ChatState()
   const toast = useToast()
   const fetchChats = async ()=>{
     try{
@@ -33,6 +33,7 @@ const MyChats = ({fetchAgain}) => {
         position: "bottom-left",
       });
     }
+    
   }
   useEffect(()=>{
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
