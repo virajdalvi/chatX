@@ -1,4 +1,4 @@
-import { Avatar, Box, FormControl,IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Avatar, Box, Button, FormControl,IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react';
 import React, { useState,useEffect } from 'react'
 import { ChatState } from '../../Context/ChatProvider';
 import img from "../../Images/Online world-pana.svg";
@@ -19,11 +19,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState("")
     const[socketConnected,setSocketConnected]=useState(false)
-    useEffect(() => {
-        socket = io(ENDPOINT);
-        socket.emit("setup",user);
-        socket.on(`connection`,()=>setSocketConnected(true)) 
-      }, [])
+    const [typing, setTyping] = useState(false)
+    const[istyping,setIsTyping] = useState(false)
+    
     const fetchMessages=async()=>{
         if(!selectedChat) return;
         try {
@@ -52,7 +50,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     console.log("Here",messages)
     
     const sendMessage = async(event)=>{
+      console.log(event,'EVENT')
         if(event.key==='Enter' && newMessage){
+            socket.emit('stop typing',selectedChat._id)
             try {
                 const config = {
                     headers: {
@@ -66,10 +66,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     chatId:selectedChat._id,
                 
                 },config)
-                console.log(data.users)
                 socket.emit("new message",data)
-                //setNewMessage("")
                 setMessages([...messages,data])
+                setNewMessage("")
             } catch (error) {
                 toast({
                     title: "Error Occured!",
@@ -83,9 +82,50 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
 
     }
-    
+    const sendButton =async()=>{
+      if(newMessage){
+        socket.emit('stop typing',selectedChat._id)
+        try {
+            const config = {
+                headers: {
+                  "Content-Type":"application/json",
+                  Authorization: `Bearer ${user.token}`,
+                },
+              };
+              setNewMessage("")
+            const {data} = await axios.post(`/api/message`,{
+                content:newMessage,
+                chatId:selectedChat._id,
+            
+            },config)
+            socket.emit("new message",data)
+            setMessages([...messages,data])
+            setNewMessage("")
+        } catch (error) {
+            toast({
+                title: "Error Occured!",
+                description:"Failed to send the message",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+              });
+        }
+    }
+    }
+    useEffect(() => {
+      socket = io(ENDPOINT);
+      socket.emit("setup", user);
+      socket.on("connected", () => setSocketConnected(true));
+      socket.on("typing", () => setIsTyping(true));
+      socket.on("stop typing", () => setIsTyping(false));
+  
+      // eslint-disable-next-line
+    }, []);
+  
    useEffect(() => {
     fetchMessages();
+    setNewMessage("")
     selectedChatCompare=selectedChat
     // eslint-disable-next-line
   }, [selectedChat]);
@@ -107,7 +147,25 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   
   
     const typingHandler =(e)=>{
-        setNewMessage(e.target.value)
+    
+    setNewMessage(e.target.value);
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
     }
     
     
@@ -208,7 +266,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     mt={3}
                     placeholder="Enter a message...."
                  >
+                    {istyping ? <>Loading..</>
+                        
+                    :<></>}
                     <InputGroup>
+                    
                     <Input
                         variant={"filled"}
                         bg={"#181D21"}
@@ -218,10 +280,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         value={newMessage}
                         
                     />
-                        <InputRightElement children={<ArrowForwardIcon bg='green.500' w={6} h={6} borderRadius={"50"}/>} />
-
+                        <InputRightElement onClick={sendButton}  children={<ArrowForwardIcon bg='green.500' w={6} h={6} borderRadius={"50"}/>} />
+                          {/*
+                          <InputRightElement width='4.5rem'>
+                            <Button h='1.75rem' size='sm' onClick={sendMessage}>
+                            <ArrowForwardIcon bg='green.500' w={6} h={6} borderRadius={"50"}/>
+                            </Button>
+          </InputRightElement>*/}
                     </InputGroup>
-               
+                 
                 
                     
 

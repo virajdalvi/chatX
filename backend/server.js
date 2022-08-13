@@ -60,11 +60,15 @@ io.on("connection",(socket)=>{
     socket.join(room);
     console.log("User Joined Room: " + room);
   });
+  //typing
+  socket.on("typing",(room)=>socket.in(room).emit("typing"))
+  //stoptyping
+  socket.on("stop typing",(room)=>socket.in(room).emit("stop typing"))
+
 
   //messages realtime
   socket.on("new message", (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
-    console.log(chat.users)
     if (!chat.users) return console.log("chat.users not defined");
 
     chat.users.forEach((user) => {
