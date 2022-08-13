@@ -1,9 +1,9 @@
 import React from 'react'
 
-const s = () => {
+const ScrollableChat = () => {
   return (
-    <div>s</div>
+    <div>ScrollableChat</div>
   )
 }
 
-export default s
+export default ScrollableChat
