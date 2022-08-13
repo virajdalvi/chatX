@@ -22,6 +22,7 @@ const HomePage = () => {
         if(!userInfo){
             history('/')
         }
+
     },[history])
   return (
     <Container maxW="xl" centerContent>
