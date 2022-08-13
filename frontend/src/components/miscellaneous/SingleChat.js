@@ -1,4 +1,4 @@
-import { Avatar, Box, Divider, FormControl, Icon, IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Avatar, Box, FormControl,IconButton, Image, Input, InputGroup, InputRightElement, Spinner, Text, useToast } from '@chakra-ui/react';
 import React, { useState,useEffect } from 'react'
 import { ChatState } from '../../Context/ChatProvider';
 import img from "../../Images/Online world-pana.svg";
@@ -6,15 +6,24 @@ import { getSender,getSenderFull,getuserProfile,groupProfile } from '../../confi
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import ProfileModal from './ProfileModal';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
+import ScrollableChat from './ScrollableChat'
 import axios from 'axios';
 import "../../components/style.css"
+import io, { Socket } from 'socket.io-client'
+const ENDPOINT ="http://localhost:5000";
+var socket,selectedChatCompare
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const toast = useToast()
     const {user,selectedChat,setSelectedChat} = ChatState();
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState("")
-    
+    const[socketConnected,setSocketConnected]=useState(false)
+    useEffect(() => {
+        socket = io(ENDPOINT);
+        socket.emit("setup",user);
+        socket.on(`connection`,()=>setSocketConnected(true)) 
+      }, [])
     const fetchMessages=async()=>{
         if(!selectedChat) return;
         try {
@@ -27,6 +36,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               const {data} =await axios.get(`/api/message/${selectedChat._id}`,config)
               setMessages(data)
               setLoading(false)
+              socket.emit("join chat",selectedChat._id)
             } catch (error) {
                 toast({
                     title: "Error Occured!",
@@ -40,7 +50,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     }
     console.log("Here",messages)
-
+    
     const sendMessage = async(event)=>{
         if(event.key==='Enter' && newMessage){
             try {
@@ -56,8 +66,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     chatId:selectedChat._id,
                 
                 },config)
-                console.log(data)
-                setNewMessage("")
+                console.log(data.users)
+                socket.emit("new message",data)
+                //setNewMessage("")
                 setMessages([...messages,data])
             } catch (error) {
                 toast({
@@ -75,8 +86,26 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     
    useEffect(() => {
     fetchMessages();
+    selectedChatCompare=selectedChat
     // eslint-disable-next-line
   }, [selectedChat]);
+  //real time messages
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare || // if chat is not selected or doesn't match current chat
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+        //
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
+
+  //For socket
+  
+  
     const typingHandler =(e)=>{
         setNewMessage(e.target.value)
     }
@@ -166,9 +195,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     margin={"auto"}
                 
                 /> : 
-                <>
-                    {/*Messages*/}
-                </>}
+                <div className='messages'>
+                    <ScrollableChat
+                        messages={messages}
+                    />
+                </div>
+            }
                 
                 <FormControl
                     onKeyDown={sendMessage}
@@ -180,6 +212,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     <Input
                         variant={"filled"}
                         bg={"#181D21"}
+                        _hover={"#181D21"}
+                        _active={"#181D21"}
                         onChange={typingHandler}
                         value={newMessage}
                         

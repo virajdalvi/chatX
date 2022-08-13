@@ -114,7 +114,7 @@ const MyChats = ({fetchAgain}) => {
                   borderRadius={"lg"}
                   key={chat._id}
                   fontSize={{base:"18px"}}
-                  fontWeight={"thin"}
+                  fontWeight={"semibold"}
                   >
                     <Flex>
                     <Avatar size={"md"} cursor={"pointer"} name={chat.isGroupChat ? groupProfile(chat.chatName):getSender(loggedUser,chat.users)} src={
