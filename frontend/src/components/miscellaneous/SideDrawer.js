@@ -9,9 +9,11 @@ import { useToast,useDisclosure } from '@chakra-ui/react'
 import axios from 'axios'
 import ChatLoading from './ChatLoading'
 import UserListItem from './UserListItem'
-
+import { getSender } from '../../config/ChatLogics'
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
 const SideDrawer = () => {
-  const {user,setSelectedChat,chats,setChats} = ChatState()
+  const {selectedChat,notification,setNotification,user,setSelectedChat,chats,setChats} = ChatState()
   const history = useNavigate();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -112,8 +114,41 @@ const SideDrawer = () => {
           <div>
             <Menu>
               <MenuButton p={1}>
+                <NotificationBadge
+                count={notification.length}
+                effect={Effect.SCALE}
+              />
                 <BellIcon fontSize={"2xl"} m={1}/>
               </MenuButton>
+              <MenuList bg={"#181D21"} border="0" pl={2}>
+                {!notification.length && "No New Messages"}
+                {notification.map((notify)=>(
+                  console.log('bb',notify.chat),
+                  notify.chat._id===selectedChat._id ? setNotification(notification.filter((n) => n !== notify)) : <></>
+
+                ))}
+                {notification.map((notif) => (
+                  
+                <MenuItem
+                  key={notif._id}
+                  bg={"#181D21"}
+                  _active={"#181D21"}
+                  _hover={"#181D21"}
+                  _focus={"#181D21"}
+                  onClick={() => {
+                    setSelectedChat(notif.chat);
+                    setNotification(notification.filter((n) => n !== notif));
+                  }}
+                >
+                  {
+                    notif.chat===selectedChat ? setNotification(notification.filter((n) => n !== notif)) : <></>
+                  }
+                  {notif.chat.isGroupChat
+                    ? `New Message in ${notif.chat.chatName}`
+                    : `New Message from ${getSender(user, notif.chat.users)}`}
+                </MenuItem>
+              ))}
+              </MenuList>
             </Menu>
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon/>} variant='ghost'  _hover={{ bg: '#272f36' }} _active={{bg: '#272f36'}} _focus={{bg: '#272f36'}}>

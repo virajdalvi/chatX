@@ -16,7 +16,7 @@ const ENDPOINT ="http://localhost:5000";
 var socket,selectedChatCompare
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const toast = useToast()
-    const {user,selectedChat,setSelectedChat} = ChatState();
+    const {notification,setNotification,user,selectedChat,setSelectedChat} = ChatState();
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState("")
@@ -127,6 +127,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("setup", user);
       socket.on("connected", () => setSocketConnected(true));
       socket.on("typing", () => setIsTyping(true));
+      socket.emit("who typing",user);
+     
+
       socket.on("stop typing", () => setIsTyping(false));
   
       // eslint-disable-next-line
@@ -138,6 +141,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare=selectedChat
     // eslint-disable-next-line
   }, [selectedChat]);
+  console.log(notification,"------------")
   //real time messages
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
@@ -145,7 +149,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        //
+        if(!notification.includes(newMessageRecieved)){
+          setNotification([newMessageRecieved,...notification])
+            setFetchAgain(!fetchAgain)
+        }
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -279,11 +286,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                       <Box
                         display={"flex"}
                       >
-                        <Avatar size={"sm"} cursor={"pointer"} name={selectedChat.isGroupChat ? selectedChat.chatName :getSender(user,selectedChat.users)} src={
+                        {
+                          !selectedChat.isGroupChat ?
+                          <Avatar size={"sm"} cursor={"pointer"} name={selectedChat.isGroupChat ? selectedChat.chatName :getSender(user,selectedChat.users)} src={
                       
-                      getuserProfile(user,selectedChat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(user,selectedChat.users) : selectedChat.isGroupChat ? groupProfile(selectedChat.chatName): getuserProfile(user,selectedChat.users)
-                    
-                    }/>
+                            getuserProfile(user,selectedChat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(user,selectedChat.users) : selectedChat.isGroupChat ? groupProfile(selectedChat.chatName): getuserProfile(user,selectedChat.users)
+                          
+                          }/>:
+                          <>
+                          </>
+
+                        }
+                        
                       <Lottie
                         options={defaultOptions}
                         height={50}

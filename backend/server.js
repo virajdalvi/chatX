@@ -7,6 +7,7 @@ const chatRoutes = require("./routes/chatRoutes")
 const messageRoutes = require("./routes/messageRoutes")
 
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
+const { emit } = require("./models/userModel");
 //server
 const app = express();
 dotenv.config();
@@ -64,6 +65,10 @@ io.on("connection",(socket)=>{
   socket.on("typing",(room)=>socket.in(room).emit("typing"))
   //stoptyping
   socket.on("stop typing",(room)=>socket.in(room).emit("stop typing"))
+  //who is typing
+  socket.on("who typing",(user)=>{
+    //console.log(user,"type kar rha 99")
+  }) 
 
 
   //messages realtime
