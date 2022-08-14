@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.00ecbf93.css",
+    "main.js": "/static/js/main.ff42669c.js",
+    "static/media/Online world-pana.svg": "/static/media/Online world-pana.529d2f05e567b95c7b3feb9c480e5beb.svg",
+    "index.html": "/index.html",
+    "main.00ecbf93.css.map": "/static/css/main.00ecbf93.css.map",
+    "main.ff42669c.js.map": "/static/js/main.ff42669c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.00ecbf93.css",
+    "static/js/main.ff42669c.js"
+  ]
+}
