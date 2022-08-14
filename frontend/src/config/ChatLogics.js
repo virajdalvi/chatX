@@ -8,7 +8,6 @@ export const getuserProfile =(loggedUser,users)=>{
     return users[0]._id === loggedUser._id ? users[1].pic : users[0].pic;
 }
 export const groupProfile=(chatName)=>{
-    console.log(chatName)
     return chatName
 }
 export const isSameSender = (messages, m, i, userId) => {

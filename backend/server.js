@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes")
 const messageRoutes = require("./routes/messageRoutes")
-
+const path = require('path')
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 const { emit } = require("./models/userModel");
 //server
@@ -14,16 +14,36 @@ dotenv.config();
 //connecting to Database
 connectDB();
 app.use(express.json()); //to accept JSON data
-//express JS api
-app.get("/", (req, res) => {
-  res.send("API is Running Now! Bro!");
-});
+
 
 app.use("/api/user", userRoutes);
 //chat Routes
 app.use("/api/chat",chatRoutes);
 //Message Routes
 app.use("/api/message",messageRoutes)
+
+//----------------Deployment-------------------
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running..");
+  });
+}
+
+
+
+
+//----------------Deployment-------------------
+
+
+
 app.use(notFound);
 app.use(errorHandler);
 //Chat api
@@ -59,7 +79,6 @@ io.on("connection",(socket)=>{
   //room creation
   socket.on("join chat", (room) => {
     socket.join(room);
-    console.log("User Joined Room: " + room);
   });
   //typing
   socket.on("typing",(room)=>socket.in(room).emit("typing"))
@@ -67,7 +86,6 @@ io.on("connection",(socket)=>{
   socket.on("stop typing",(room)=>socket.in(room).emit("stop typing"))
   //who is typing
   socket.on("who typing",(user)=>{
-    //console.log(user,"type kar rha 99")
   }) 
 
 

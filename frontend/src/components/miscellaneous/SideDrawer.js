@@ -123,7 +123,7 @@ const SideDrawer = () => {
               <MenuList bg={"#181D21"} border="0" pl={2}>
                 {!notification.length && "No New Messages"}
                 {notification.map((notify)=>(
-                  console.log('bb',notify.chat),
+                  
                   notify.chat._id===selectedChat._id ? setNotification(notification.filter((n) => n !== notify)) : <></>
 
                 ))}

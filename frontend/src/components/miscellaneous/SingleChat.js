@@ -12,7 +12,7 @@ import "../../components/style.css"
 import io, { Socket } from 'socket.io-client'
 import Lottie from "react-lottie"
 import animationData from '../../animation/typing.json'
-const ENDPOINT ="http://localhost:5000";
+const ENDPOINT ="https://chatx-mern.herokuapp.com/";
 var socket,selectedChatCompare
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const toast = useToast()
@@ -56,10 +56,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
 
     }
-    console.log("Here",messages)
     
     const sendMessage = async(event)=>{
-      console.log(event,'EVENT')
+      
         if(event.key==='Enter' && newMessage){
             socket.emit('stop typing',selectedChat._id)
             try {
@@ -141,7 +140,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare=selectedChat
     // eslint-disable-next-line
   }, [selectedChat]);
-  console.log(notification,"------------")
+  
   //real time messages
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
