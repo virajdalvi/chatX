@@ -10,6 +10,8 @@ import ScrollableChat from './ScrollableChat'
 import axios from 'axios';
 import "../../components/style.css"
 import io, { Socket } from 'socket.io-client'
+import Lottie from "react-lottie"
+import animationData from '../../animation/typing.json'
 const ENDPOINT ="http://localhost:5000";
 var socket,selectedChatCompare
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -21,7 +23,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const[socketConnected,setSocketConnected]=useState(false)
     const [typing, setTyping] = useState(false)
     const[istyping,setIsTyping] = useState(false)
-    
+    const defaultOptions = {
+      loop: true,
+      autoplay: true,
+      animationData: animationData,
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice",
+      },
+    };
     const fetchMessages=async()=>{
         if(!selectedChat) return;
         try {
@@ -266,7 +275,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     mt={3}
                     placeholder="Enter a message...."
                  >
-                    {istyping ? <>Loading..</>
+                    {istyping ?
+                      <Box
+                        display={"flex"}
+                      >
+                        <Avatar size={"sm"} cursor={"pointer"} name={selectedChat.isGroupChat ? selectedChat.chatName :getSender(user,selectedChat.users)} src={
+                      
+                      getuserProfile(user,selectedChat.users)==="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" ? getSender(user,selectedChat.users) : selectedChat.isGroupChat ? groupProfile(selectedChat.chatName): getuserProfile(user,selectedChat.users)
+                    
+                    }/>
+                      <Lottie
+                        options={defaultOptions}
+                        height={50}
+                        width={70}
+                        style={{ marginBottom: 15, marginLeft: 0 }}
+                      />
+                      </Box>
+                       
+                    
                         
                     :<></>}
                     <InputGroup>
