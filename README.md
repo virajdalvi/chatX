@@ -25,7 +25,5 @@ A MERN stack webapp using Socket.io for real time messaging with user authentica
 <img src="Project Screenshots/ChatWindow.png">
 
 - Mobile view
-<p> 
-    <img src="Project Screenshots/m1.jpeg">
-    <img src="Project Screenshots/m2.jpeg">
-</p>
+
+<img src="Project Screenshots/m1.jpeg" width="50%"> <img src="Project Screenshots/m2.jpeg"width="50%">
