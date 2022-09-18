@@ -18,7 +18,13 @@ A MERN stack webapp using Socket.io for real time messaging with user authentica
 
 <img src="Project Screenshots/Signup.png">
 
-## ChatWindow
+## Search User
+
+- Search Users according to Email or name to start conversation with them
+
+<img src="Project Screenshots/SearchUser.png">
+
+## Chat Window
 
 - Responsive Chat Window so that you can chat from any device. This window consists of all your recent chats.
 
@@ -26,4 +32,21 @@ A MERN stack webapp using Socket.io for real time messaging with user authentica
 
 - Mobile view
 
-<img src="Project Screenshots/m1.jpeg" width="50%"> <img src="Project Screenshots/m2.jpeg"width="50%">
+<img src="Project Screenshots/m1.jpeg" width="50%">
+<img src="Project Screenshots/m2.jpeg" width="50%">
+
+## Chat Box
+
+- Chatbox for single chats with the indication of chatting when the other user is typing & notifications.
+
+<img src="Project Screenshots/ChatBox.png">
+
+## Create Group Chat
+
+- Create Group by seraching their name or email-id in the search bar
+
+<img src="Project Screenshots/CreateGroup.png">
+
+## Group Chat Feature
+
+<img src="Project Screenshots/GroupChat.png">
