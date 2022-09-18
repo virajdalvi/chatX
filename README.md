@@ -2,6 +2,8 @@
 
 A MERN stack webapp using Socket.io for real time messaging with user authentication and group messaging feature. Stack: MongoDB, Express, React, Node, Chakra UI, Socket.io
 
+Link: https://chatx-mern.herokuapp.com/
+
 ## Highlights
 
 - Secure Authentication by using the JSON Web Token (JWT).
